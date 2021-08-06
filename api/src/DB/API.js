@@ -1,14 +1,13 @@
-const  axios  = require('axios');
-const { Router } = require('express');
-const { Pokemon, Type } = require('../db');
+const axios = require('axios');
+const { Pokemon, Type } = require ('../db')
 const Pokemons = "https://pokeapi.co/api/v2/pokemon?limit=40"
-const router = Router();
 
 function upperFirst(str) {
     return str[0].toUpperCase() + str.substr(1).toLowerCase();
 }
 
-router.get('/', async function PokeApi(req, res) {
+//Pokemons de la API al Back
+async function API(_req, res) {
     try {
     const { data } = await axios.get(Pokemons);
     const response = await axios.all(data.results.map(async ({ url }) => await axios.get(url)));
@@ -28,10 +27,26 @@ router.get('/', async function PokeApi(req, res) {
             type: e.types.map((e) => upperFirst(e.type.name))
         };
     });
-    return res.json(results);
+    res.send(results);
     } catch (error) {
         res.send(error)
     }
-})
+};
 
-module.exports = router;
+async function getDBPoke (_req, res) {
+    try {
+        const response = await Pokemon.findAll({ include: {model: Tipo, as: "type"}})
+        const results = response.map((e) => {
+            return {
+                ...e,
+                Tipo: e.type.map((e) => e.name)
+            }
+        })
+        console.log(results)
+        return results;
+    } catch(error) {
+        res.send(error)
+    }
+}
+
+module.exports = {API, getDBPoke}
