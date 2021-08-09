@@ -2,7 +2,7 @@ const  axios  = require('axios');
 const { Router } = require('express');
 const { Pokemon, Type } = require('../db');
 const Pokemons = "https://pokeapi.co/api/v2/pokemon?limit=40"
-const PokeCode = "https://pokeapi.co/api/v2/pokemon/{id}"
+const Rocket = `https://pokeapi.co/api/v2/pokemon/{id}`
 const router = Router();
 
 function upperFirst(str) {
@@ -13,7 +13,11 @@ router.get('/', async function PokeApi(req, res) {
     try {
     const { Nombre } = req.query
     const { data } = await axios.get(Pokemons);
-    const PokeDB = await Pokemon.findAll();
+    const PokeDB = await Pokemon.findAll({
+        include: { model: Type }, 
+        attributes: { 
+            exclude: ["createdAt", "updatedAt"]}
+        });
     const response = await axios.all(data.results.map(async ({ url }) => await axios.get(url)));
     const results = response
     .map((e) => e.data)
@@ -50,46 +54,111 @@ router.get('/', async function PokeApi(req, res) {
     }
 })
 
-/*router.get("/:id", async function PokeID(req, res) {
-        const { id } = req.params;
-        const query = await Pokemon.findByPk(id, { include: {model: Type}});
-        res.json(query);
-        if (query === null) {
-            try {
-               const PokeApi = await axios.get(PokeCode);
-               const POKECODE = {
-                ID: PokeApi.data.id,
-                Nombre: PokeApi.data.upperFirst(name),
-                Vida: PokeApi.data.stats.find((e) => e.stat.name === "hp").base_stat,
-                Ataque: PokeApi.data.stats.find((e) => e.stat.name === "attack").base_stat,
-                Defensa: PokeApi.data.stats.find((e) => e.stat.name === "defense").base_stat,
-                Velocidad: PokeApi.data.stats.find((e) => e.stat.name === "speed").base_stat,
-                Altura: PokeApi.data.height,
-                Peso: PokeApi.data.weight,
-                Imagen: PokeApi.data.sprites.other.dream_world.front_default,
-                Tipo: PokeApi.data.types.map((e) => upperFirst(e.type.name))
-               };
-               if (PokeApi) return res.json(POKECODE);
-            } catch(error) {
-                res.json("ID NO EXISTENTE")
-            }
+router.get("/:id", async function PokemonID(req, res) {
+    const { id } = req.params;
+    if (id) {
+      if (typeof Number(id) === "number") {
+        try {
+          const ASH = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
+          let obj = {
+            ID: ASH.data.id,
+            Nombre: upperFirst(ASH.data.name),
+            Vida: ASH.data.stats.find((e) => e.stat.name === "hp").base_stat,
+            Ataque: ASH.data.stats.find((e) => e.stat.name === "attack")
+              .base_stat,
+            Defensa: ASH.data.stats.find((e) => e.stat.name === "defense")
+              .base_stat,
+            Velocidad: ASH.data.stats.find((e) => e.stat.name === "speed")
+              .base_stat,
+            Altura: ASH.data.height,
+            Peso: ASH.data.weight,
+            Imagen: ASH.data.sprites.other.dream_world.front_default,
+            Tipo: ASH.data.types.map((e) => upperFirst(e.type.name)),
+          };
+          return res.json(obj);
+        } catch (error) {
+          res.status(400).send("ID NOT EXISTS");
         }
+      } else {
+        try {
+          const query = await Pokemon.findByPk(id, {
+            include: { model: Type },
+          });
+          return res.json(query);
+        } catch (error) {
+          res.status(400).send(`No hay {id} en la DB`);
+        }
+      }
+    }
+  });
+
+/*router.get('/:id', async function PokemonID(req, res) {
+    try {
+    const { id } = req.params;
+    const query = await Pokemon.findByPk(id, {
+        include: { model: Type },
+    });
+    res.json(query);
+} catch(error) {
+    res.json('No hay `{id}` en la DB')
+}
+    if(query === null) {
+        try {
+            const ASH = await axios.get(Rocket);
+            const obj = {
+            ID: ASH.data.id,
+            Nombre: upperFirst(ASH.data.name),
+            Vida: ASH.data.stats.find((e) => e.stat.name === "hp").base_stat,
+            Ataque: ASH.data.stats.find((e) => e.stat.name === "attack").base_stat,
+            Defensa: ASH.data.stats.find((e) => e.stat.name === "defense").base_stat,
+            Velocidad: ASH.data.stats.find((e) => e.stat.name === "speed").base_stat,
+            Altura: ASH.data.height,
+            Peso: ASH.data.weight,
+            Imagen: ASH.data.sprites.other.dream_world.front_default,
+            Tipo: ASH.data.types.map((e) => upperFirst(e.type.name))
+            };
+            if(ASH) return res.json(obj);
+        } catch(error) {
+            res.json("ID NOT EXISTS")
+        }
+    }
 })*/
 
 router.post('/', async function createPoke(req, res) {
-     const { Nombre, Vida, Ataque, Defensa, Velocidad, Altura, Peso } = req.body;
+     const { Nombre, Vida, Fuerza, Ataque, Defensa, Velocidad, Altura, Peso, typeId } = req.body;
      try {
+     const Val_Pokemon = await Pokemon.findOne({
+         where: {
+             Nombre: Nombre,
+         },
+     })
+     if(!Val_Pokemon) {
          const new_Pokemon = await Pokemon.create({
-             Nombre,
-             Vida,
-             Ataque,
-             Defensa,
-             Velocidad,
-             Altura,
-             Peso
+             Nombre: Nombre,
+             Vida: Vida,
+             Fuerza: Fuerza,
+             Ataque: Ataque,
+             Defensa: Defensa,
+             Velocidad: Velocidad,
+             Altura: Altura,
+             Peso: Peso
          });
-         res.json(new_Pokemon);
-     } catch(error) {
+         const PokeID = await Type.findAll({
+            where: {
+                id: typeId
+            },
+         });
+         const show_Pokemon = await new_Pokemon.addType(PokeID);
+         return res.send(show_Pokemon);
+     } 
+     const PokeID = await Type.findAll({
+         where: {
+             id: typeId,
+         },
+     });
+     const show_Pokemon = await Val_Pokemon.addType(PokeID);
+     res.send(show_Pokemon)
+    } catch(error) {
          res.status(500).json(error);
      }
 })
