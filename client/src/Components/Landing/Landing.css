@@ -1,0 +1,32 @@
+.landing {
+    font-size: 100px;
+    color: gray
+  }
+  
+  .card {
+    background-image: url("./START.jpg");
+      height: 350px;
+      width: 350px;
+      background-color: gray;
+      border-radius: 100%;
+      margin:5rem;
+    }
+  
+  .card:hover {
+      width: 350px;
+      height: 350px;
+      background-color: rgba(77, 74, 74, 0.548);
+      border-radius: 100%;
+      transition: 300ms;
+    }
+  
+  .Zelda {
+    text-decoration: none;
+      color: white;
+      transition: 300ms;
+  }
+  
+  .Zelda:hover {
+      text-decoration: none;
+      color: red;
+  }
