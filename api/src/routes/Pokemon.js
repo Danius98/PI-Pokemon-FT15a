@@ -86,7 +86,7 @@ router.get("/:id", async function PokemonID(req, res) {
           });
           return res.json(query);
         } catch (error) {
-          res.status(400).send(`No hay {id} en la DB`);
+          res.status(400).send(`No hay id ${id} en la DB`);
         }
       }
     }
