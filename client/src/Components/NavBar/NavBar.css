@@ -1,0 +1,113 @@
+.navbar {
+    height: 56px;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background-color: #303236;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.navbar nav {
+    height: 100%;
+}
+
+.list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    height: 100%;
+}
+
+.list-item {
+    margin: 0;
+    display: flex;
+    height: 100%;
+    width: auto;
+    align-items: center;
+}
+
+.list-item a {
+    color: white;
+    height: 100%;
+    padding: 16px 10px;
+    border-bottom: 4px solid transparent;
+}
+
+.list-item a:hover,
+.list-item a.active {
+    background-color: #808080;
+    color: white;
+}
+
+.order {
+    color: white;
+}
+
+.continent {
+    display: flex;
+    margin-left: 3em;
+    color: white;
+    align-items: center;
+}
+
+.activity {
+    align-self: center;
+    margin-left: 3em;
+}
+
+.activity input {
+    margin-left: 0.5em;
+    border: 1px;
+    border-radius: 30px;
+    padding: 2%
+}
+
+.link {
+    color: rgb(238, 227, 227);
+    background-size: 100%;
+    padding-left: 0.2%;
+    padding-right: 0.2%;
+    border-radius: 5%;
+    align-items: baseline;
+}
+
+.link:hover {
+    background-color: rgb(194, 182, 182);
+    color: white(255, 255, 255, 0);
+    transition: 0.7s;
+}
+
+.landinglink {
+    text-decoration: none;
+    background-size: cover;
+    background-image: url('./Landing.jpg');
+    color: rgb(190, 188, 197)
+}
+
+.landinglink:hover {
+    background-color: rgb(223, 198, 198);
+    border: 1px #111010 solid;
+    color: rgba(255, 255, 255, 0)
+}
+
+.btnact {
+    text-align: center;
+    font-size: medium;
+    transition: all 0.3s;
+    color: #fff;
+    background-color: gray;
+    border: 1px black;
+    border-radius: 2em;
+}
+
+.btnact:hover {
+    background-color: lightgray;
+    color: black;
+}

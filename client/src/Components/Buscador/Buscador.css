@@ -1,0 +1,32 @@
+.container {
+    background-color: darkgray;
+    display: flex;
+    justify-content: center;
+}
+
+.btnSearch {
+    text-align: center;
+    font-size: medium;
+    display: inline-block;
+    transition: all 0.3s;
+    padding: 0.6em 1.2em;
+    margin: 0.3em 0.3em;
+    color: #fff;
+    background-color: gray;
+    border: 1px black;
+    border-radius: 2em;
+    margin-left: 20px;
+}
+
+.btnSearch:hover {
+    background-color: lightgray;
+    color: black;
+}
+
+.inputtext {
+    border-radius: 60px;
+    margin: 6px;
+    background-color: rgb(223, 203, 203);
+    border: black;
+    margin-left: 15px
+}
