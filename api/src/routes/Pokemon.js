@@ -14,10 +14,21 @@ router.get('/', async function PokeApi(req, res) {
     const { Nombre } = req.query
     const { data } = await axios.get(Pokemons);
     const PokeDB = await Pokemon.findAll({
-        include: { model: Type }, 
-        attributes: { 
-            exclude: ["createdAt", "updatedAt"]}
-        });
+        include: { 
+          model: Type, 
+        attributes: ["Tipo"], 
+        through: {
+          attributes: [],
+        },
+      },
+      });
+    /*const Pokeres = PokeDB.map((e) => {
+      return {
+        ...e,
+        type: e.type.map((e) => e.Tipo)
+      }
+    })*/
+    console.log(PokeDB)
     const response = await axios.all(data.results.map(async ({ url }) => await axios.get(url)));
     const results = response
     .map((e) => e.data)
@@ -32,7 +43,8 @@ router.get('/', async function PokeApi(req, res) {
             Altura: e.height,
             Peso: e.weight,
             Imagen: e.sprites.other.dream_world.front_default,
-            Tipo: e.types.map((e) => upperFirst(e.type.name))
+            Creado: false,
+            Tipo: e.types.map((e) => upperFirst(e.type.name)),
         };
     });
     const PokeArray = PokeDB.concat(results);
@@ -73,6 +85,7 @@ router.get("/:id", async function PokemonID(req, res) {
             Altura: ASH.data.height,
             Peso: ASH.data.weight,
             Imagen: ASH.data.sprites.other.dream_world.front_default,
+            Creado: false,
             Tipo: ASH.data.types.map((e) => upperFirst(e.type.name)),
           };
           return res.json(obj);
@@ -125,7 +138,7 @@ router.get("/:id", async function PokemonID(req, res) {
 })*/
 
 router.post('/', async function createPoke(req, res) {
-     const { Nombre, Vida, Fuerza, Ataque, Defensa, Velocidad, Altura, Peso, typeId } = req.body;
+     const { Nombre, Vida, Ataque, Defensa, Velocidad, Altura, Peso, Imagen, typeId } = req.body;
      try {
      const Val_Pokemon = await Pokemon.findOne({
          where: {
@@ -136,12 +149,13 @@ router.post('/', async function createPoke(req, res) {
          const new_Pokemon = await Pokemon.create({
              Nombre: Nombre,
              Vida: Vida,
-             Fuerza: Fuerza,
              Ataque: Ataque,
              Defensa: Defensa,
              Velocidad: Velocidad,
              Altura: Altura,
-             Peso: Peso
+             Peso: Peso,
+             Imagen: Imagen,
+             Creado: true
          });
          const PokeID = await Type.findAll({
             where: {
