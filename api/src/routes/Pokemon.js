@@ -2,7 +2,7 @@ const  axios  = require('axios');
 const { Router } = require('express');
 const { Pokemon, Type } = require('../db');
 const Pokemons = "https://pokeapi.co/api/v2/pokemon?limit=40"
-const Rocket = `https://pokeapi.co/api/v2/pokemon/{id}`
+//const Rocket = `https://pokeapi.co/api/v2/pokemon/${id}`
 const router = Router();
 
 function upperFirst(str) {
@@ -25,7 +25,7 @@ router.get('/', async function PokeApi(req, res) {
     /*const Pokeres = PokeDB.map((e) => {
       return {
         ...e,
-        type: e.type.map((e) => e.Tipo)
+        types: e.types.map((e) => e.Tipo)
       }
     })*/
     console.log(PokeDB)
@@ -44,9 +44,13 @@ router.get('/', async function PokeApi(req, res) {
             Peso: e.weight,
             Imagen: e.sprites.other.dream_world.front_default,
             Creado: false,
-            Tipo: e.types.map((e) => upperFirst(e.type.name)),
-        };
-    });
+            types: e.types.map(({type}) => {
+              return {
+              Tipo: upperFirst(type.name),
+            };
+        }),
+      }
+    })
     const PokeArray = PokeDB.concat(results);
     const array = [];
     if(!Nombre) {
@@ -68,8 +72,9 @@ router.get('/', async function PokeApi(req, res) {
 
 router.get("/:id", async function PokemonID(req, res) {
     const { id } = req.params;
+    console.log(id)
     if (id) {
-      if (typeof Number(id) === "number") {
+      if ((/^([0-9])*$/.test(id))) {
         try {
           const ASH = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
           let obj = {
@@ -94,16 +99,24 @@ router.get("/:id", async function PokemonID(req, res) {
         }
       } else {
         try {
-          const query = await Pokemon.findByPk(id, {
+          let query = await Pokemon.findByPk(id, {
             include: { model: Type },
           });
-          return res.json(query);
+           res.json(query);
         } catch (error) {
           res.status(400).send(`No hay id ${id} en la DB`);
         }
       }
     }
   });
+
+ /* include: { 
+    model: Type, 
+  attributes: ["Tipo"], 
+  through: {
+    attributes: [],
+  },
+},*/
 
 /*router.get('/:id', async function PokemonID(req, res) {
     try {
