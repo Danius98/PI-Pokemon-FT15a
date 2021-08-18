@@ -91,7 +91,11 @@ router.get("/:id", async function PokemonID(req, res) {
             Peso: ASH.data.weight,
             Imagen: ASH.data.sprites.other.dream_world.front_default,
             Creado: false,
-            Tipo: ASH.data.types.map((e) => upperFirst(e.type.name)),
+            types: ASH.data.types.map(({type}) => {
+              return {
+              Tipo: upperFirst(type.name),
+            };
+        }),
           };
           return res.json(obj);
         } catch (error) {
@@ -100,7 +104,13 @@ router.get("/:id", async function PokemonID(req, res) {
       } else {
         try {
           let query = await Pokemon.findByPk(id, {
-            include: { model: Type },
+            include: { 
+            model: Type, 
+           attributes: ["Tipo"], 
+           through: {
+            attributes: [],
+           }
+           },
           });
            res.json(query);
         } catch (error) {
