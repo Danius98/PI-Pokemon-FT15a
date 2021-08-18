@@ -8,26 +8,8 @@ import './Type.css';
 export default function CreatePokemon() {
     const Types = useSelector((state) => state.Types )
     const [input, setInput] = useState('');
-    const [currentPage, setCurrentPage] = useState(0);
     const dispatch = useDispatch();
-    const next_Page = () => {
-        if(Types.length <= currentPage + 5) {
-            setCurrentPage(currentPage);
-        } else setCurrentPage(currentPage + 5);
-    };
-    const prev_Page = () => {
-        if (currentPage < 6) {
-            setCurrentPage(0);
-        } else {
-            setCurrentPage(currentPage - 5);
-        }
-    };
-    useEffect(() => {
-        setCurrentPage(0)
-    }, [Types]);
-
-    const Tipos = Types.slice(currentPage, currentPage + 5);
-    
+    const Tipos = Types
     const [dataForm, setDataForm] = useState({
         Nombre: '',
         Vida: '',
@@ -92,7 +74,6 @@ const submitForm = (e) => {
     }
   };
   return (
-      <div>
           <div className="container">
                 <Link to="/Pokemon" className="homelink">
                     <h1>Inicio</h1>
@@ -117,8 +98,8 @@ const submitForm = (e) => {
                 <div>
                 <input className="input"
                 type="number"
-                placeholder="Ataque"
-                name="Ataque"
+                placeholder="Fuerza"
+                name="Fuerza"
                 value={dataForm.Ataque}
                 onChange={setDataHandler}/>
                 </div>
@@ -158,20 +139,23 @@ const submitForm = (e) => {
                 <input className="input"
                 type="text"
                 placeholder="Imagen"
-                name="Imagen"
+                name="Nombre"
                 value={dataForm.Imagen}
                 onChange={setDataHandler}/>
                 </div>
+                <div className="input">
+                    <label>Seleccioná Tipos</label>
+                    <input className="countries"
+                    type="text"
+                    placeholder="Encuentra tu Tipo"
+                    onChange={submitInput}/>
+                </div>
                 <div>
-                    <input className="buton"type="submit" value="Añadir Pokemon"/>
+                    <input className="buton"type="submit" value="Añadir Tipo"/>
                 </div>
                 </form>
-                </div>
-                <button onClick={prev_Page} className="btn2">{'<<'}</button>
-                  <button onClick={next_Page} className="btn2">{'>>'}</button>
                 <div className="wrap">
-                        {Tipos.length < 6 ? (
-                        Tipos.map((c) => (
+                        {Tipos.map((c) => (
                             <div className="countrycont2">
                                 <div>
                                     <Type key={c.id} Tipo={c.Tipo}/>
@@ -180,8 +164,7 @@ const submitForm = (e) => {
                                     </button>
                                     </div>
                                     </div>
-                        ))
-                        ): console.log(Error)}
+                        ))}
                 </div>
       </div>
   )

@@ -30,7 +30,6 @@ export default function Pokemons() {
     }, [pokemons]);
 console.log(pokemons)
     const Filtred_Pokemon = pokemons.slice(currentPage, currentPage + 9);
-    console.log(pokemons.types)
     return (
         <div>
                 <div>
@@ -47,7 +46,7 @@ console.log(pokemons)
             ID = {e.ID}
             Imagen = {e.Imagen}
             Nombre = {e.Nombre}
-            types = {e.types.map((e) => (e.Tipo))}
+            Tipo = {e.Tipo}
             />
             ))}
           </div>

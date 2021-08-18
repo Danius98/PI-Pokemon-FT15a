@@ -70,7 +70,7 @@
 }
 
 .link {
-    color: rgb(238, 227, 227);
+    color: black;
     background-size: 100%;
     padding-left: 0.2%;
     padding-right: 0.2%;
@@ -110,4 +110,8 @@
 .btnact:hover {
     background-color: lightgray;
     color: black;
+}
+
+.dbpokemon {
+    margin-top: 30px;
 }

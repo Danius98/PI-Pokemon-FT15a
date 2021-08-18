@@ -14,13 +14,13 @@
 }
 
 .container {
-    background-color: transparent;
+    /*background-color: transparent;*/
     border: 1px black solid;
     border-radius: 10%;
     margin: 0.5rem;
-    width:30%;
     border: 2px solid rgba(255, 255, 255, 0.500);
     color: white;
+    margin-bottom: 0.5em;
 }
 
 .container:hover {

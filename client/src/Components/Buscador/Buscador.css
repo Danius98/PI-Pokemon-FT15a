@@ -9,8 +9,7 @@
     font-size: medium;
     display: inline-block;
     transition: all 0.3s;
-    padding: 0.6em 1.2em;
-    margin: 0.3em 0.3em;
+    margin: 0.15em 0.15em;
     color: #fff;
     background-color: gray;
     border: 1px black;
@@ -27,6 +26,6 @@
     border-radius: 60px;
     margin: 6px;
     background-color: rgb(223, 203, 203);
-    border: black;
     margin-left: 15px
 }
+

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import { connect, useDispatch } from "react-redux";
-import { getPokemon, show_Pokemon, Name_OrderA, Name_OrderZ, Type, Created, Poke_Attack_Max, Poke_Attack_Min} from '../../actions/index.js';
+import { getPokemon, Name_OrderA, Name_OrderZ, Type, Created, Poke_Attack_Max, Poke_Attack_Min} from '../../actions/index.js';
 import Buscador from '../Buscador/Buscador.jsx';
 import './NavBar.css';
 
-const NavBar = ({getPokemon, show_Pokemon, Name_OrderA, Name_OrderZ, Type, Created, Poke_Attack_Max, Poke_Attack_Min}) => {
+const NavBar = ({getPokemon, Name_OrderA, Name_OrderZ, Type, Created, Poke_Attack_Max, Poke_Attack_Min}) => {
     const[Order, setOrder] = useState('');
     const[Tipo, setTipo] = useState('');
     const[Pokemon, setPokemon] = useState('');
@@ -22,21 +22,32 @@ const NavBar = ({getPokemon, show_Pokemon, Name_OrderA, Name_OrderZ, Type, Creat
         }
     }, [Tipo, getPokemon, dispatch]);
     useEffect(() => {
+        if(Creado) {
+            getPokemon();
+            if(Creado !== "Todos") {
+                setTimeout(() => {
+                    dispatch(Created(Creado))
+                }, 50)
+            }
+        }
+    }, [Creado, getPokemon, dispatch]);
+    useEffect(() => {
         if(Order === "Todos") getPokemon();
         else if(Order === "A-Z") Name_OrderA();
         else if(Order === "Z-A") Name_OrderZ();
         else if(Order === "Mayor Ataque") Poke_Attack_Max();
         else if(Order === "Menor Ataque") Poke_Attack_Min();
     }, [Order, setOrder])
-    useEffect(() => {
-        if(Creado === "falso") Created();
+    /*useEffect(() => {
+        if(Creado === "Todos") Created();
+        else if(Creado === "false") Created();
         else if(Creado === "true") Created();
-    }, [Creado, setCreado])
+    }, [Creado, setCreado])*/
     const Pokemonhandler = (e) => {
         e.preventDefault()
         setPokemon(e.target.value)
     }
-    const showPokehandler = (e) => {
+    /*const showPokehandler = (e) => {
         e.preventDefault()
         getPokemon()
         setTimeout(() => {
@@ -44,7 +55,7 @@ const NavBar = ({getPokemon, show_Pokemon, Name_OrderA, Name_OrderZ, Type, Creat
         }, 50);
         console.log(Pokemon)
         setPokemon('')
-    }
+    }*/
     console.log(Tipo)
     console.log(Pokemon)
     return (
@@ -68,6 +79,7 @@ const NavBar = ({getPokemon, show_Pokemon, Name_OrderA, Name_OrderZ, Type, Creat
                     <h5>Filtrado por Creado</h5>
                     <div>
                         <select onChange={(event) => setCreado(event.target.value)}>
+                        <option value="Todos">Todos</option>
                           <option value="false">Existente</option>
                           <option value="true">Creado</option>
                         </select>                   
@@ -102,19 +114,9 @@ const NavBar = ({getPokemon, show_Pokemon, Name_OrderA, Name_OrderZ, Type, Creat
                     </div>
                 </div>
                 <div>
-                    <label className="order">Pokemon Creado</label>
-                    <form>
-                        <input className="inputtext"
-                        placeholder="Crea tu Pokemon"
-                        type="text"
-                        value={Pokemon}
-                        onChange={Pokemonhandler}
-                        />
-                        <button className="btnact" onClick={showPokehandler}>Buscá</button>
                         <Link className="link" to="/Pokemon/Create">
                             <h5>Crea un Pokemon</h5>
                         </Link>
-                    </form>
                 </div>
             </div>
         </header>
@@ -124,7 +126,6 @@ const NavBar = ({getPokemon, show_Pokemon, Name_OrderA, Name_OrderZ, Type, Creat
 const mapDispatchToProps = (dispatch) => {
     return {
         getPokemon: () => dispatch(getPokemon()),
-        show_DB_Pokemon: (payload) => dispatch(show_Pokemon(payload)),
         Name_OrderA: () => dispatch(Name_OrderA()),
         Name_OrderZ: () => dispatch(Name_OrderZ()),
         Type: (Tipo) => dispatch(Type(Tipo)),

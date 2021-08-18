@@ -3,7 +3,6 @@ GET_POKEMONS,
 GET_POKEMONS_NAME,
 GET_POKEMON_ID,
 GET_ALL_TYPES,
-SHOW_DB_POKEMON,
 NAME_ORDER_A,
 NAME_ORDER_Z,
 TYPE,
@@ -26,6 +25,7 @@ const Name_Order = (a, b) => {
 
 const initialState = {
     Pokemons: [],
+    ExactPoke: [],
     PokeInfo: [],
     Types: []
 };
@@ -34,6 +34,7 @@ function rootReducer(state = initialState, action) {
     if(action.type === GET_POKEMONS) {
         return {
             ...state,
+            ExactPoke: action.payload,
             Pokemons: action.payload
         };
     }
@@ -55,37 +56,45 @@ function rootReducer(state = initialState, action) {
             Types: action.payload
         };
     }
-    if(action.type === SHOW_DB_POKEMON) {
-        return {
-            ...state,
-            Pokemons: state.Pokemons.filter((c) => {
-                return c.pokemon.some((a) => a.Nombre === action.payload)
-            })
-        };
-    }
     if(action.type === NAME_ORDER_A) {
         return {
             ...state,
             Pokemons: state.Pokemons.slice().sort(Name_Order)
         }
     };
-    if(action.type === NAME_ORDER_Z) {
-        return {
+    if(action.type === NAME_ORDER_Z) {       
+         return {
             ...state,
             Pokemons: state.Pokemons.slice().sort(Name_Order).reverse()
         }
     };
     if(action.type === TYPE) {
-        return {
-            ...state,
-            Pokemons: state.Pokemons.filter((c) => c.Tipo === action.payload)
-        }
+        const allPokemons = state.ExactPoke
+        const typeFilter = action.payload === "Todos" ? allPokemons
+        : allPokemons.filter(({types}) => {
+                return types.find(({Tipo}) => Tipo === action.payload)}
+                 )
+                 return {
+                     ...state,
+                     Pokemons: typeFilter,
+                 }
     };
     if(action.type === CREATED) {
-        return {
-            ...state,
-            Pokemons: state.Pokemons.filter((c) => c.Creado === action.payload)
+        const Existe = state.Pokemons
+        let createdFilter;
+        if(action.payload === "Todos") {
+            createdFilter = Existe;
         }
+        if(action.payload === "true") {
+            createdFilter = Existe.filter((e) => e.Creado === true)
+        }
+        if(action.payload === "false") {
+            createdFilter = Existe.filter((e) => e.Creado === false)
+        }
+        return  {
+                ...state,
+                Pokemons: createdFilter,
+                 }
     };
     if(action.type === POKE_ATK_MAX) {
         return {

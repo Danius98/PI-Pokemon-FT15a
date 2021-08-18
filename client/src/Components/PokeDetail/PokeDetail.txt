@@ -32,10 +32,9 @@ export default function PokeID() {
                  <h3>Velocidad: {PokeDetailed.Velocidad}</h3>
                  <h3>Altura: {PokeDetailed.Altura}Cm</h3>
                  <h3>Peso: {PokeDetailed.Peso}Kg</h3>
-                 <h3>Tipo:{PokeDetailed.types.map((PokeDetailed) => (PokeDetailed.Tipo))}</h3>
+                 <h3>Tipo:{PokeDetailed.types.map((e) => (e.Tipo))}</h3>
                  </div>
             </div>
         </div>
     )
 }
-
